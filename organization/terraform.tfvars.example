@@ -1,0 +1,8 @@
+# Copy this file to terraform.tfvars and fill in your own emails.
+# terraform.tfvars is ignored by Git, so your emails stay private.
+# Each email must never have been used for an AWS account before.
+account_emails = {
+  security = "barnesjisaac+aws-security@outlook.com"
+  dev      = "barnesjisaac+aws-dev@outlook.com"
+  prod     = "barnesjisaac+aws-prod@outlook.com"
+}
