@@ -1,0 +1,7 @@
+# Copy to terraform.tfvars (ignored by Git) and adjust if needed.
+admin_user = {
+  user_name   = "isaac.barnes"
+  given_name  = "Isaac"
+  family_name = "Barnes"
+  email       = "barnesjisaac@outlook.com"
+}
