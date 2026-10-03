@@ -1,7 +1,7 @@
 # ------------------------------------------------------------------
 # Organization-wide CloudTrail: one trail in the management account
 # records API activity in EVERY account, including future ones.
-# Member accounts can't see or change it, and the SCP from Day 2
+# Member accounts can see it but can't change it, and the SCP from Day 2
 # blocks them from tampering with logging.
 # ------------------------------------------------------------------
 data "aws_caller_identity" "current" {}

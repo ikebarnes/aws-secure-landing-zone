@@ -64,9 +64,9 @@ Why this landing zone is built the way it is. Each entry records the choice, the
 
 **Decision:** One multi-region organization trail, created in the management account, with log file validation enabled and a lifecycle rule that deletes logs after 365 days.
 
-**Why:** It captures API activity in every account, including accounts added later, and member accounts can't see or change it. Log file validation proves the logs weren't altered, which matters for audits under NIST and similar frameworks.
+**Why:** It captures API activity in every account, including accounts added later. Member accounts can see the trail but can't change or delete it, and an SCP blocks them from tampering with logging. Log file validation proves the logs weren't altered, which matters for audits under NIST and similar frameworks.
 
-**Current limitation:** The log bucket lives in the management account while the Security account is pending. The target design moves logs to a dedicated log archive account so even management-account admins can't alter them.
+**Current limitation:** The log bucket lives in the management account. The target design moves logs to a dedicated log archive account with S3 Object Lock, so even management-account admins can't alter them.
 
 **Encryption:** Logs are encrypted at rest with S3-managed keys (SSE-S3) to keep lab costs at zero. In production, I'd use a customer-managed KMS key so log access can be restricted and audited separately from S3 permissions.
 
@@ -74,12 +74,14 @@ Why this landing zone is built the way it is. Each entry records the choice, the
 
 ## 8. GuardDuty now, Security Hub with AWS Config later
 
-**Decision:** GuardDuty is enabled in the management account today. Security Hub is enabled later, alongside AWS Config and the NIST 800-171 conformance pack.
+**Decision:** GuardDuty is enabled in the management account. Security Hub is enabled later, alongside AWS Config and the NIST 800-171 conformance pack.
 
-**Why:** Security Hub's compliance checks depend on AWS Config, so enabling it before Config would produce empty results and cost money for nothing. Once the Security account exists, it becomes the delegated administrator for GuardDuty and Security Hub, following AWS's recommended pattern of keeping security tooling out of the management account.
+**Why:** Security Hub's compliance checks depend on AWS Config, so enabling it before Config would produce empty results and cost money for nothing. GuardDuty was enabled in the management account while the Security account was waiting on an account quota increase. Now that the Security account exists, the next step is to make it the delegated administrator for GuardDuty and Security Hub, following AWS's recommended pattern of keeping security tooling out of the management account.
 
 ---
 
 ## Challenges
 
-**Account quota on a new organization.** New organizations start with a very low account limit (2 here), so creating the dev and security accounts failed partway through the apply. I requested an increase through Service Quotas and tested the guardrails on the prod account in the meantime. Once the quota is approved, running `terraform apply` again creates only the missing accounts, because Terraform recognizes that the rest already exist.
+**Account quota on a new organization.** New organizations start with a very low account limit (2 here), so creating the dev and security accounts failed partway through the apply. I requested an increase through Service Quotas and tested the guardrails on the prod account in the meantime. Once the increase was approved, running `terraform apply` again created only the two missing accounts, because Terraform recognized that everything else already existed. Re-running the security baseline then gave the new accounts the correct SSO access automatically.
+
+**SSO login failing with "Invalid start URL."** The CLI config still held a placeholder portal address. Newer Identity Center instances use a portal URL format (`*.portal.<region>.app.aws`) that differs from most tutorials. I corrected the config, cleared the cached login, and the SSO login worked.
