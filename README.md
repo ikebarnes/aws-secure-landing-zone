@@ -200,4 +200,4 @@ Built to run at close to zero cost:
 
 **Isaac Barnes**, Cloud Engineer · AWS Certified Solutions Architect – Associate · CompTIA Security+
 
-[LinkedIn](https://linkedin.com/in/ike-barnes) · [GitHub](https://github.com/ikebarnes)
+[LinkedIn](https://linkedin.com/in/ike-barnes) · [GitHub](https://github.com/ike-barnes)
