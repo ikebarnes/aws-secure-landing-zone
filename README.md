@@ -193,6 +193,14 @@ Built to run at close to zero cost:
 - Make the security account the delegated administrator for GuardDuty and Security Hub.
 - Move CloudTrail logs to a dedicated log archive account with S3 Object Lock.
 - Enable AWS Config with the NIST 800-171 conformance pack, and Security Hub.
+- Move the Terraform state bucket out of the management account, so nothing runs there except governance. SCPs don't apply to the management account, so anything in it sits outside the guardrails.
+- Write a break-glass runbook, add alerts whenever emergency access is used, and test it on a schedule (see [decision 9](docs/decisions.md)).
+
+---
+
+## Feedback that improved this project
+
+After I shared this project, an engineer reviewing it pointed out two gaps: anything running in the management account sits outside every SCP guardrail, and emergency (break-glass) access wasn't documented. I added break-glass access to the [decision log](docs/decisions.md) and added moving the state bucket out of the management account to the next steps. Feedback is welcome; feel free to open an issue.
 
 ---
 

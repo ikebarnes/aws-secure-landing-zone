@@ -80,6 +80,18 @@ Why this landing zone is built the way it is. Each entry records the choice, the
 
 ---
 
+## 9. Break-glass access
+
+**Decision:** The emergency path into the organization, for when IAM Identity Center is unavailable or misconfigured, is the root user of the management account. It's protected with MFA, has no access keys, and is used only in emergencies. All root activity is recorded by the organization CloudTrail.
+
+**Why:** Once SSO is the only way in, an SSO outage or a bad permission change could lock every engineer out. A locked-down organization without a documented emergency path tends to get loosened in a hurry during the first outage, which is worse than planning for it up front. The break-glass path deliberately lives in the management account, the one place SCPs can't block it.
+
+**Next step:** Write a short runbook covering when break-glass use is allowed, how to sign in, and what to do afterward, and test it on a schedule.
+
+**In production:** Two dedicated break-glass identities with hardware MFA, credentials stored in a vault with access split between people, an EventBridge rule that alerts the security team the moment either one signs in, and a quarterly test of the full procedure.
+
+---
+
 ## Challenges
 
 **Account quota on a new organization.** New organizations start with a very low account limit (2 here), so creating the dev and security accounts failed partway through the apply. I requested an increase through Service Quotas and tested the guardrails on the prod account in the meantime. Once the increase was approved, running `terraform apply` again created only the two missing accounts, because Terraform recognized that everything else already existed. Re-running the security baseline then gave the new accounts the correct SSO access automatically.
